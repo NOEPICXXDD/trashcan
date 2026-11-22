@@ -1,7 +1,0 @@
-{
-  "name": "trashcan",
-  "version": "1.0.0",
-  "description": "Trash Sorting Challenge พร้อมระบบเก็บผลผู้เล่นและ export JSON",
-  "main": "server.js",
-  "scripts": { "start": "node --env-file=.env server.js" }
-}

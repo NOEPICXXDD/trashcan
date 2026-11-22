@@ -1,21 +1,37 @@
 // ===== Trash Sorting Challenge =====
-const trashList = document.getElementById('trash-list');
-const items     = document.querySelectorAll('.trash-item');
-const dropAreas = document.querySelectorAll('.drop-area');
-const checkBtn  = document.getElementById('check-btn');
-const resetBtn  = document.getElementById('reset-btn');
-const resultBox = document.getElementById('result');
-const nameInput = document.getElementById('player-name');
+// ลากขยะลงถัง -> ตรวจคำตอบ (เต็ม 8) -> ส่งผลไปเก็บที่เซิร์ฟเวอร์ (api/results.php)
+
+const trashList  = document.getElementById('trash-list');
+const items      = document.querySelectorAll('.trash-item');
+const dropAreas  = document.querySelectorAll('.drop-area');
+const checkBtn   = document.getElementById('check-btn');
+const resetBtn   = document.getElementById('reset-btn');
+const resultBox  = document.getElementById('result');
+const nameInput  = document.getElementById('player-name');
 const saveStatus = document.getElementById('save-status');
-const exportBtn = document.getElementById('export-btn');
+
+let dragged  = null;   // ชิ้นที่กำลังลาก
+let selected = null;   // ชิ้นที่แตะเลือกไว้ (สำหรับมือถือ)
+let attempt  = 0;      // ตรวจกี่ครั้งแล้วในการเปิดหน้านี้
 
 // รหัสประจำการเล่น 1 ครั้ง (ไว้จัดกลุ่มหลายรอบของคนเดียวกัน)
 const sessionId = (window.crypto && crypto.randomUUID)
     ? crypto.randomUUID()
-    : String(Date.now()) + Math.random().toString(16).slice(2);
+    : String(Date.now()) + '-' + Math.random().toString(16).slice(2);
 
-let dragged  = null;   // ชิ้นที่กำลังลาก
-let selected = null;   // ชิ้นที่แตะเลือกไว้ (สำหรับมือถือ)
+// ---------- แสดงรหัส Challenge (มาจากเซิร์ฟเวอร์ แก้ที่ api/storage.php) ----------
+async function loadInfo() {
+    const label = document.getElementById('challenge-id');
+    try {
+        const res = await fetch('api/results.php');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const info = await res.json();
+        label.textContent = 'Challenge ID: ' + info.challengeId + ' · Group ' + info.group;
+    } catch (err) {
+        label.textContent = '';
+    }
+}
+loadInfo();
 
 // ---------- ย้ายขยะไปยังที่หมายเลือก ----------
 function moveItem(item, target) {
@@ -34,6 +50,7 @@ function updatePlaceholders() {
 function clearMarks() {
     items.forEach(i => i.classList.remove('correct', 'wrong'));
     resultBox.innerHTML = '';
+    saveStatus.textContent = '';
 }
 
 function clearSelected() {
@@ -97,20 +114,23 @@ makeDropTarget(trashList);   // ลากกลับมาวางที่เ
 // ---------- ตรวจคำตอบ ----------
 checkBtn.addEventListener('click', () => {
     clearSelected();
+
+    // ต้องมีชื่อ ผู้จัดจะได้รู้ว่าใครเล่น
+    if (nameInput.value.trim() === '') {
+        saveStatus.className = 'save-status error';
+        saveStatus.textContent = 'กรุณากรอกชื่อผู้เล่นก่อนตรวจคำตอบ';
+        nameInput.focus();
+        return;
+    }
+
     let score = 0;
     let unplaced = 0;
-    const answers = [];   // เก็บคำตอบทุกชิ้นไว้ส่งไปบันทึก
+    const formData = new FormData();   // ข้อมูลที่จะส่งไปเก็บ (PHP อ่านด้วย $_POST)
 
     items.forEach(item => {
         item.classList.remove('correct', 'wrong');
         const bin = item.closest('.bin');
-        const isCorrect = !!bin && bin.dataset.bin === item.dataset.type;
-        answers.push({
-            item: item.querySelector('p').textContent,
-            chosenBin: bin ? bin.dataset.bin : null,
-            correctBin: item.dataset.type,
-            isCorrect
-        });
+        formData.append('answers[' + item.dataset.id + ']', bin ? bin.dataset.bin : '');
 
         if (!bin) {            // ยังไม่ได้วางลงถัง นับเป็นผิด
             unplaced++;
@@ -126,65 +146,42 @@ checkBtn.addEventListener('click', () => {
 
     const total = items.length;   // 8
     let msg;
-    if (score === total)      msg = '🎉 ยอดเยี่ยม! แยกขยะถูกทุกชิ้น';
+    if (score === total)           msg = '🎉 ยอดเยี่ยม! แยกขยะถูกทุกชิ้น';
     else if (score >= total * 0.6) msg = '👍 ดีมาก! ลองแก้ชิ้นที่ผิด (กรอบสีแดง) แล้วตรวจอีกครั้ง';
-    else                      msg = '💪 สู้ๆ! ลองย้ายชิ้นที่ผิด (กรอบสีแดง) แล้วตรวจอีกครั้ง';
+    else                           msg = '💪 สู้ๆ! ลองย้ายชิ้นที่ผิด (กรอบสีแดง) แล้วตรวจอีกครั้ง';
 
     resultBox.innerHTML =
         `<div class="score">${score} <small>/ ${total} คะแนน</small></div>` +
         `<div class="msg">${msg}</div>` +
         (unplaced ? `<div class="warn">ยังมีขยะที่ไม่ได้วางลงถัง ${unplaced} ชิ้น (นับเป็นผิด)</div>` : '');
-
     resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    saveResult(answers);
+
+    attempt++;
+    formData.append('displayName', nameInput.value.trim());
+    formData.append('sessionId', sessionId);
+    formData.append('attempt', attempt);
+    saveResult(formData);
 });
 
 // ---------- ส่งผลไปเก็บที่เซิร์ฟเวอร์ ----------
-async function saveResult(answers) {
+async function saveResult(formData) {
     saveStatus.className = 'save-status';
     saveStatus.textContent = 'กำลังบันทึกผล...';
     try {
-        const res = await fetch('/api/results', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                sessionId,
-                name: nameInput.value,
-                answers
-            })
-        });
+        const res = await fetch('api/results.php', { method: 'POST', body: formData });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         saveStatus.textContent = '✔ บันทึกผลเรียบร้อยแล้ว';
     } catch (err) {
         saveStatus.className = 'save-status error';
-        saveStatus.textContent = 'บันทึกผลไม่สำเร็จ (ตรวจสอบว่าเปิดเซิร์ฟเวอร์อยู่)';
+        saveStatus.textContent = 'บันทึกผลไม่สำเร็จ (ตรวจสอบว่าเปิดผ่านเซิร์ฟเวอร์ PHP)';
     }
 }
-
-// ---------- ดาวน์โหลด JSON ----------
-exportBtn.addEventListener('click', async () => {
-    let res = await fetch('/api/export');
-    if (res.status === 401) {                       // เซิร์ฟเวอร์ตั้งรหัสไว้
-        const key = prompt('กรอกรหัสสำหรับ export ข้อมูล');
-        if (!key) return;
-        res = await fetch('/api/export?key=' + encodeURIComponent(key));
-    }
-    if (!res.ok) { alert('ดาวน์โหลดไม่สำเร็จ (รหัสไม่ถูกต้อง?)'); return; }
-
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'players-' + new Date().toISOString().slice(0, 10) + '.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-});
 
 // ---------- เริ่มใหม่ ----------
 resetBtn.addEventListener('click', () => {
     clearSelected();
     items.forEach(item => trashList.appendChild(item));
     clearMarks();
-    saveStatus.textContent = '';
     updatePlaceholders();
 });
 

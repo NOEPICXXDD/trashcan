@@ -11,6 +11,7 @@
     <header>
         <div class="logo">CHALLENGE</div>
         <h1>Trash Sorting Challenge</h1>
+        <p class="challenge-id" id="challenge-id"></p>
     </header>
 
     <main>
@@ -29,42 +30,42 @@
 
             <div class="trash-list" id="trash-list">
 
-                <div class="trash-item" draggable="true" data-type="organic">
+                <div class="trash-item" draggable="true" data-type="organic" data-id="banana">
                     <img src="img/banana.png" alt="เปลือกกล้วย" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/Banana-Peel.png';}">
                     <p>เปลือกกล้วย</p>
                 </div>
 
-                <div class="trash-item" draggable="true" data-type="recycle">
+                <div class="trash-item" draggable="true" data-type="recycle" data-id="bottle">
                     <img src="img/bottle.webp" alt="ขวดพลาสติก" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/bottle.jpg';}">
                     <p>ขวดพลาสติก</p>
                 </div>
 
-                <div class="trash-item" draggable="true" data-type="hazard">
+                <div class="trash-item" draggable="true" data-type="hazard" data-id="battery">
                     <img src="img/battery.jpg" alt="ถ่านไฟฉาย" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/battery.png';}">
                     <p>ถ่านไฟฉาย</p>
                 </div>
 
-                <div class="trash-item" draggable="true" data-type="general">
+                <div class="trash-item" draggable="true" data-type="general" data-id="tissue">
                     <img src="img/tissue.webp" alt="กระดาษทิชชู" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/กระดาษทิชชู่.webp';}">
                     <p>กระดาษทิชชู</p>
                 </div>
 
-                <div class="trash-item" draggable="true" data-type="recycle">
+                <div class="trash-item" draggable="true" data-type="recycle" data-id="can">
                     <img src="img/can.jpg" alt="กระป๋องอะลูมิเนียม" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/can.jfif';}">
                     <p>กระป๋องอะลูมิเนียม</p>
                 </div>
 
-                <div class="trash-item" draggable="true" data-type="organic">
+                <div class="trash-item" draggable="true" data-type="organic" data-id="vegetable">
                     <img src="img/vegetable.webp" alt="เศษผัก" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/vegetable.jpg';}">
                     <p>เศษผัก</p>
                 </div>
 
-                <div class="trash-item" draggable="true" data-type="hazard">
+                <div class="trash-item" draggable="true" data-type="hazard" data-id="bulb">
                     <img src="img/bulb.webp" alt="หลอดไฟ" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/หลอดไฟ.jpg';}">
                     <p>หลอดไฟ</p>
                 </div>
 
-                <div class="trash-item" draggable="true" data-type="general">
+                <div class="trash-item" draggable="true" data-type="general" data-id="snack">
                     <img src="img/snack.jpg" alt="ซองขนม" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/ซองขนม.jfif';}">
                     <p>ซองขนม</p>
                 </div>
@@ -122,8 +123,9 @@
             <button class="reset-button" id="reset-btn" type="button">เริ่มใหม่</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div class="save-status" id="save-status" aria-live="polite"></div>
-            <button class="export-button" id="export-btn" type="button">ดาวน์โหลดข้อมูลผู้เล่น (.json)</button>
         </section>
+
+        <p class="host-link"><a href="host.html">สำหรับผู้จัด (Host): ดูและดาวน์โหลดข้อมูลผู้เล่น</a></p>
 
     </main>
 
