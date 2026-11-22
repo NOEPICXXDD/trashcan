@@ -27,44 +27,44 @@
                 <span>ทั้งหมด 8 ชิ้น</span>
             </div>
 
-            <div class="trash-list">
+            <div class="trash-list" id="trash-list">
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="organic">
                     <img src="img/banana.png" alt="เปลือกกล้วย" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/Banana-Peel.png';}">
                     <p>เปลือกกล้วย</p>
                 </div>
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="recycle">
                     <img src="img/bottle.webp" alt="ขวดพลาสติก" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/bottle.jpg';}">
                     <p>ขวดพลาสติก</p>
                 </div>
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="hazard">
                     <img src="img/battery.jpg" alt="ถ่านไฟฉาย" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/battery.png';}">
                     <p>ถ่านไฟฉาย</p>
                 </div>
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="general">
                     <img src="img/tissue.webp" alt="กระดาษทิชชู" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/กระดาษทิชชู่.webp';}">
                     <p>กระดาษทิชชู</p>
                 </div>
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="recycle">
                     <img src="img/can.jpg" alt="กระป๋องอะลูมิเนียม" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/can.jfif';}">
                     <p>กระป๋องอะลูมิเนียม</p>
                 </div>
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="organic">
                     <img src="img/vegetable.webp" alt="เศษผัก" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/vegetable.jpg';}">
                     <p>เศษผัก</p>
                 </div>
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="hazard">
                     <img src="img/bulb.webp" alt="หลอดไฟ" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/หลอดไฟ.jpg';}">
                     <p>หลอดไฟ</p>
                 </div>
 
-                <div class="trash-item" draggable="true">
+                <div class="trash-item" draggable="true" data-type="general">
                     <img src="img/snack.jpg" alt="ซองขนม" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='img/ซองขนม.jfif';}">
                     <p>ซองขนม</p>
                 </div>
@@ -79,40 +79,32 @@
 
             <div class="bin-list">
 
-                <div class="bin organic">
+                <div class="bin organic" data-bin="organic">
                     <div class="bin-icon"></div>
                     <h3>ขยะอินทรีย์</h3>
                     <p>เศษอาหารและพืชผัก</p>
-                    <div class="drop-area">
-                        ลากขยะมาวางที่นี่
-                    </div>
+                    <div class="drop-area"><span class="placeholder">ลากขยะมาวางที่นี่</span></div>
                 </div>
 
-                <div class="bin recycle">
+                <div class="bin recycle" data-bin="recycle">
                     <div class="bin-icon"></div>
                     <h3>ขยะรีไซเคิล</h3>
                     <p>วัสดุที่นำกลับมาใช้ใหม่ได้</p>
-                    <div class="drop-area">
-                        ลากขยะมาวางที่นี่
-                    </div>
+                    <div class="drop-area"><span class="placeholder">ลากขยะมาวางที่นี่</span></div>
                 </div>
 
-                <div class="bin general">
+                <div class="bin general" data-bin="general">
                     <div class="bin-icon"></div>
                     <h3>ขยะทั่วไป</h3>
                     <p>ขยะที่รีไซเคิลได้ยาก</p>
-                    <div class="drop-area">
-                        ลากขยะมาวางที่นี่
-                    </div>
+                    <div class="drop-area"><span class="placeholder">ลากขยะมาวางที่นี่</span></div>
                 </div>
 
-                <div class="bin hazard">
+                <div class="bin hazard" data-bin="hazard">
                     <div class="bin-icon"></div>
                     <h3>ขยะอันตราย</h3>
                     <p>ขยะที่มีสารอันตราย</p>
-                    <div class="drop-area">
-                        ลากขยะมาวางที่นี่
-                    </div>
+                    <div class="drop-area"><span class="placeholder">ลากขยะมาวางที่นี่</span></div>
                 </div>
 
             </div>
@@ -120,12 +112,15 @@
         </section>
 
         <section class="submit-section">
-            <button class="check-button">
+            <button class="check-button" id="check-btn" type="button">
                 ตรวจคำตอบ
             </button>
+            <button class="reset-button" id="reset-btn" type="button">เริ่มใหม่</button>
+            <div class="result" id="result" aria-live="polite"></div>
         </section>
 
     </main>
 
+    <script src="script.js"></script>
 </body>
 </html>

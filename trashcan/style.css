@@ -213,6 +213,109 @@ main {
     background: #094d33;
 }
 
+/* ===== ลากวาง / ตรวจคำตอบ ===== */
+.trash-list {
+    min-height: 120px;
+    border-radius: 12px;
+}
+
+.trash-list.drag-over {
+    outline: 2px dashed #0f6b48;
+    outline-offset: 6px;
+}
+
+.trash-item.dragging {
+    opacity: 0.4;
+}
+
+.trash-item.selected {
+    border-color: #0f6b48;
+    box-shadow: 0 0 0 3px #0f6b4855;
+}
+
+.drop-area {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    transition: 0.2s;
+}
+
+.drop-area.drag-over {
+    background: #ffffff;
+    border-color: #0f6b48;
+    border-style: solid;
+}
+
+.drop-area .trash-item {
+    width: 92px;
+    padding: 6px;
+    cursor: grab;
+}
+
+.drop-area .trash-item img {
+    width: 48px;
+    height: 48px;
+}
+
+.drop-area .trash-item p {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.trash-item.correct {
+    background: #d5f5dd;
+    border-color: #1b8a3a;
+}
+
+.trash-item.wrong {
+    background: #ffd9d9;
+    border-color: #c92424;
+}
+
+.reset-button {
+    background: white;
+    color: #0f6b48;
+    border: 2px solid #0f6b48;
+    border-radius: 10px;
+    padding: 11px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.reset-button:hover {
+    background: #e9f3ec;
+}
+
+.result {
+    margin-top: 20px;
+}
+
+.result:empty {
+    display: none;
+}
+
+.result .score {
+    font-size: 44px;
+    font-weight: bold;
+    color: #0f6b48;
+    line-height: 1.3;
+}
+
+.result .score small {
+    font-size: 22px;
+    color: #3d4f44;
+}
+
+.result .msg {
+    font-size: 16px;
+}
+
+.result .warn {
+    color: #b36b00;
+    font-size: 14px;
+}
+
 @media (max-width: 650px) {
 
     header h1 {
