@@ -112,11 +112,17 @@
         </section>
 
         <section class="submit-section">
+            <div class="name-row">
+                <label for="player-name">ชื่อผู้เล่น</label>
+                <input type="text" id="player-name" maxlength="50" placeholder="พิมพ์ชื่อของคุณ">
+            </div>
             <button class="check-button" id="check-btn" type="button">
                 ตรวจคำตอบ
             </button>
             <button class="reset-button" id="reset-btn" type="button">เริ่มใหม่</button>
             <div class="result" id="result" aria-live="polite"></div>
+            <div class="save-status" id="save-status" aria-live="polite"></div>
+            <button class="export-button" id="export-btn" type="button">ดาวน์โหลดข้อมูลผู้เล่น (.json)</button>
         </section>
 
     </main>

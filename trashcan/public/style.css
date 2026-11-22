@@ -316,6 +316,49 @@ main {
     font-size: 14px;
 }
 
+.name-row {
+    margin-bottom: 18px;
+}
+
+.name-row label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.name-row input {
+    padding: 10px 14px;
+    border: 2px solid #b8d6c2;
+    border-radius: 10px;
+    font-size: 16px;
+    width: 260px;
+    max-width: 100%;
+}
+
+.name-row input:focus {
+    outline: none;
+    border-color: #0f6b48;
+}
+
+.save-status {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #3d4f44;
+}
+
+.save-status.error {
+    color: #c92424;
+}
+
+.export-button {
+    margin-top: 22px;
+    background: none;
+    border: none;
+    color: #0f6b48;
+    text-decoration: underline;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 @media (max-width: 650px) {
 
     header h1 {
