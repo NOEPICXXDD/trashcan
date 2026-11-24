@@ -9,10 +9,11 @@
 | `host.html` | หน้าผู้จัด: กรอกรหัส ดูรายชื่อ ดาวน์โหลด .json |
 | `api/storage.php` | ฟังก์ชันอ่าน/เขียนไฟล์ (มีล็อก) + **ตั้งรหัส Challenge ตรงบนสุด** |
 | `api/results.php` | POST = บันทึกผลการเล่น 1 ครั้ง (คิดคะแนนที่เซิร์ฟเวอร์) |
-| `api/export.php` | POST + รหัสผู้จัด = ส่งข้อมูลผู้เล่นทั้งหมดเป็น JSON |
+| `api/reflection.php` | POST = ผู้เล่นเพิ่มข้อความสะท้อนคิดของการเล่นครั้งนั้น |
+| `api/export.php` | POST + รหัสผู้จัด = ส่งข้อมูลผู้เล่นทั้งหมดเป็น JSON (ผู้เล่น 1 คน = 1 Portfolio Item) |
 
-## ก่อนใช้: แก้รหัส Challenge
-เปิด `api/storage.php` แก้ `CHALLENGE_ID` และ `CHALLENGE_GROUP` (เช่น กลุ่ม 05 → `G05-C01`, `05`)
+## ก่อนใช้: แก้ค่าใน api/storage.php
+แก้ `CHALLENGE_ID` และ `CHALLENGE_GROUP` (เช่น กลุ่ม 05 → `G05-C01`, `05`) และ `CHALLENGE_SKILLS` ถ้าต้องการเปลี่ยนทักษะที่ขึ้นในไฟล์ export
 
 ## ทดสอบบนเครื่อง
 ```bash
@@ -38,6 +39,11 @@ cd ~/<โฟลเดอร์ repo>
 git pull
 sudo cp -r ~/<โฟลเดอร์ repo>/* /var/www/html/
 ```
+
+## ไฟล์ที่ผู้จัด export ได้ (host.html)
+- **Portfolio Items (.json)**: ลิสต์ของ Item รูปแบบเดียวกับ `item002` ใน portfolio-example.json (ผู้เล่น 1 คน = 1 Item ใช้รอบล่าสุดของแต่ละคน)
+- **ข้อมูลผู้เล่นละเอียด (.json)**: มีชื่อ คะแนน จำนวนรอบ คำตอบรายชิ้น + Item
+- ข้อมูลดิบทุกรอบอยู่ที่ `/var/www/data/challenge-players.json`
 
 ## วันงาน
 - ผู้เล่นเปิด `http://<public-ip>/` → กรอกชื่อ → เล่น

@@ -73,6 +73,11 @@ $record = [
     'attempt'     => max(1, min(99, (int)($_POST['attempt'] ?? 1))),
     'score'       => $score,
     'total'       => count(ANSWER_KEY),
+    'reflection'  => [                       // optional, the player may write it later (reflection.php)
+        'whatILearned' => cleanText($_POST['whatILearned'] ?? ''),
+        'challenge'    => cleanText($_POST['challenge'] ?? ''),
+        'nextStep'     => cleanText($_POST['nextStep'] ?? ''),
+    ],
     'answers'     => $answers,
 ];
 

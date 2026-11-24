@@ -123,6 +123,23 @@
             <button class="reset-button" id="reset-btn" type="button">เริ่มใหม่</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div class="save-status" id="save-status" aria-live="polite"></div>
+
+            <div class="reflection-panel" id="reflection-panel" hidden>
+                <h3>บันทึกสิ่งที่ได้เรียนรู้ (ไม่บังคับ)</h3>
+                <p>ข้อความนี้จะอยู่ในไฟล์ข้อมูลที่ผู้จัดส่งออก</p>
+
+                <label for="learned">สิ่งที่ได้เรียนรู้</label>
+                <textarea id="learned" rows="2" maxlength="300"></textarea>
+
+                <label for="difficulty">สิ่งที่ยากหรือท้าทาย</label>
+                <textarea id="difficulty" rows="2" maxlength="300"></textarea>
+
+                <label for="next-step">ก้าวต่อไป</label>
+                <textarea id="next-step" rows="2" maxlength="300"></textarea>
+
+                <button class="reflection-btn" id="reflection-btn" type="button">บันทึกข้อความ</button>
+                <div class="save-status" id="reflection-status" aria-live="polite"></div>
+            </div>
         </section>
 
         <p class="host-link"><a href="host.html">สำหรับผู้จัด (Host): ดูและดาวน์โหลดข้อมูลผู้เล่น</a></p>

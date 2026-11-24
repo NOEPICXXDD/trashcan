@@ -9,10 +9,17 @@ const resetBtn   = document.getElementById('reset-btn');
 const resultBox  = document.getElementById('result');
 const nameInput  = document.getElementById('player-name');
 const saveStatus = document.getElementById('save-status');
+const reflectionPanel  = document.getElementById('reflection-panel');
+const reflectionBtn    = document.getElementById('reflection-btn');
+const reflectionStatus = document.getElementById('reflection-status');
+const learnedBox    = document.getElementById('learned');
+const difficultyBox = document.getElementById('difficulty');
+const nextStepBox   = document.getElementById('next-step');
 
 let dragged  = null;   // ชิ้นที่กำลังลาก
 let selected = null;   // ชิ้นที่แตะเลือกไว้ (สำหรับมือถือ)
 let attempt  = 0;      // ตรวจกี่ครั้งแล้วในการเปิดหน้านี้
+let lastRecordId = null;   // รหัสบันทึกล่าสุดจากเซิร์ฟเวอร์ (ไว้เพิ่มข้อความสะท้อนคิด)
 
 // รหัสประจำการเล่น 1 ครั้ง (ไว้จัดกลุ่มหลายรอบของคนเดียวกัน)
 const sessionId = (window.crypto && crypto.randomUUID)
@@ -51,6 +58,8 @@ function clearMarks() {
     items.forEach(i => i.classList.remove('correct', 'wrong'));
     resultBox.innerHTML = '';
     saveStatus.textContent = '';
+    reflectionPanel.hidden = true;     // คะแนนเก่าแล้ว ต้องตรวจใหม่
+    lastRecordId = null;
 }
 
 function clearSelected() {
@@ -160,6 +169,9 @@ checkBtn.addEventListener('click', () => {
     formData.append('displayName', nameInput.value.trim());
     formData.append('sessionId', sessionId);
     formData.append('attempt', attempt);
+    formData.append('whatILearned', learnedBox.value);     // ข้อความที่เคยเขียนไว้ ติดไปกับรอบนี้ด้วย
+    formData.append('challenge', difficultyBox.value);
+    formData.append('nextStep', nextStepBox.value);
     saveResult(formData);
 });
 
@@ -170,6 +182,10 @@ async function saveResult(formData) {
     try {
         const res = await fetch('api/results.php', { method: 'POST', body: formData });
         if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        lastRecordId = data.id;
+        reflectionStatus.textContent = '';
+        reflectionPanel.hidden = false;
         saveStatus.textContent = '✔ บันทึกผลเรียบร้อยแล้ว';
     } catch (err) {
         saveStatus.className = 'save-status error';
@@ -177,11 +193,34 @@ async function saveResult(formData) {
     }
 }
 
+// ---------- บันทึกข้อความสะท้อนคิด (ไม่บังคับ) ----------
+reflectionBtn.addEventListener('click', async () => {
+    if (!lastRecordId) return;
+    const formData = new FormData();
+    formData.append('id', lastRecordId);
+    formData.append('sessionId', sessionId);
+    formData.append('whatILearned', learnedBox.value);
+    formData.append('challenge', difficultyBox.value);
+    formData.append('nextStep', nextStepBox.value);
+
+    reflectionStatus.className = 'save-status';
+    reflectionStatus.textContent = 'กำลังบันทึก...';
+    try {
+        const res = await fetch('api/reflection.php', { method: 'POST', body: formData });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        reflectionStatus.textContent = '✔ บันทึกข้อความแล้ว';
+    } catch (err) {
+        reflectionStatus.className = 'save-status error';
+        reflectionStatus.textContent = 'บันทึกข้อความไม่สำเร็จ';
+    }
+});
+
 // ---------- เริ่มใหม่ ----------
 resetBtn.addEventListener('click', () => {
     clearSelected();
     items.forEach(item => trashList.appendChild(item));
     clearMarks();
+    [learnedBox, difficultyBox, nextStepBox].forEach(t => t.value = '');
     updatePlaceholders();
 });
 

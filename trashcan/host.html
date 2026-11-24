@@ -12,6 +12,7 @@
         .host-box button:disabled { opacity: .45; cursor: not-allowed; }
         .host-msg { margin: 10px 0; font-size: 14px; }
         .host-msg.error { color: #c92424; }
+        .host-note { font-size: 13px; opacity: .8; margin: 4px 0 10px; }
         .table-wrap { overflow-x: auto; margin-top: 12px; }
         table { border-collapse: collapse; width: 100%; font-size: 14px; background: #fff; }
         th, td { border: 1px solid #cfe3d6; padding: 8px 10px; text-align: left; }
@@ -30,12 +31,14 @@
             <label for="host-key">รหัสผู้จัด</label><br>
             <input type="password" id="host-key" autocomplete="off">
             <button id="load-btn" type="button">โหลดข้อมูล</button>
-            <button id="download-btn" type="button" disabled>ดาวน์โหลด .json</button>
             <div class="host-msg" id="host-msg"></div>
+            <button id="items-btn" type="button" disabled>ดาวน์โหลด Portfolio Items (.json)</button>
+            <button id="full-btn" type="button" disabled>ดาวน์โหลดข้อมูลผู้เล่นละเอียด (.json)</button>
+            <p class="host-note">Portfolio Items = รูปแบบ Item ตาม Data Contract (ผู้เล่น 1 คน = 1 Item) · ข้อมูลละเอียด = มีชื่อ คะแนน และคำตอบรายชิ้น</p>
             <div class="table-wrap">
                 <table id="players-table" hidden>
                     <thead>
-                        <tr><th>#</th><th>เวลา</th><th>ชื่อ</th><th>รอบที่</th><th>คะแนน</th></tr>
+                        <tr><th>#</th><th>เวลาที่เล่นล่าสุด</th><th>ชื่อ</th><th>จำนวนรอบ</th><th>คะแนนรอบล่าสุด</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -47,7 +50,8 @@
     <script>
         const keyInput = document.getElementById('host-key');
         const loadBtn  = document.getElementById('load-btn');
-        const dlBtn    = document.getElementById('download-btn');
+        const itemsBtn = document.getElementById('items-btn');
+        const fullBtn  = document.getElementById('full-btn');
         const msg      = document.getElementById('host-msg');
         const table    = document.getElementById('players-table');
         let exported = null;    // ข้อมูลล่าสุดที่โหลดมา
@@ -83,7 +87,7 @@
             data.players.forEach((p, i) => {
                 const tr = document.createElement('tr');
                 [i + 1, new Date(p.playedAt).toLocaleString('th-TH'), p.displayName,
-                 p.attempt, p.score + ' / ' + p.total].forEach(v => {
+                 p.attempts, p.score + ' / ' + p.total].forEach(v => {
                     const td = document.createElement('td');
                     td.textContent = v;           // textContent = ปลอดภัยจาก HTML ที่ผู้เล่นพิมพ์
                     tr.appendChild(td);
@@ -91,21 +95,31 @@
                 tbody.appendChild(tr);
             });
             table.hidden = data.players.length === 0;
-            dlBtn.disabled = false;
-            show('โหลดแล้ว ' + data.totalPlays + ' รายการ');
+            itemsBtn.disabled = data.players.length === 0;
+            fullBtn.disabled = false;
+            show('ผู้เล่น ' + data.totalPlayers + ' คน (บันทึกทั้งหมด ' + data.totalPlays + ' รอบ)');
         }
 
-        dlBtn.addEventListener('click', () => {
-            if (!exported) return;
-            const blob = new Blob([JSON.stringify(exported, null, 2)],
+        function download(content, filename) {
+            const blob = new Blob([JSON.stringify(content, null, 2)],
                                   { type: 'application/json;charset=utf-8' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = exported.challengeId + '-players.json';
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             a.remove();
             setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }
+
+        // แบบ Portfolio Item: ลิสต์ของ Item (ผู้เล่น 1 คน = 1 Item)
+        itemsBtn.addEventListener('click', () => {
+            if (exported) download(exported.players.map(p => p.item), exported.challengeId + '-items.json');
+        });
+
+        // แบบละเอียด: ชื่อ คะแนน คำตอบ + Item
+        fullBtn.addEventListener('click', () => {
+            if (exported) download(exported, exported.challengeId + '-players.json');
         });
     </script>
 </body>
