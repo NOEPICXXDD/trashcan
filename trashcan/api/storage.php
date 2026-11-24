@@ -2,8 +2,8 @@
 // Shared helpers for all API files:  require 'storage.php';
 
 // ★ แก้ 3 ค่านี้ให้ตรงกับกลุ่มของคุณ (รหัสรูปแบบ Gxx-Cxx)
-const CHALLENGE_ID    = 'G00-C01';
-const CHALLENGE_GROUP = '00';
+const CHALLENGE_ID    = 'G24-C01';
+const CHALLENGE_GROUP = '24';
 const CHALLENGE_TITLE = 'Trash Sorting Challenge';
 const CHALLENGE_SKILLS = ['Waste sorting', 'Environmental awareness'];   // shown in every exported Item
 
