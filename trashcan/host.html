@@ -34,11 +34,11 @@
             <div class="host-msg" id="host-msg"></div>
             <button id="items-btn" type="button" disabled>ดาวน์โหลด Portfolio Items (.json)</button>
             <button id="full-btn" type="button" disabled>ดาวน์โหลดข้อมูลผู้เล่นละเอียด (.json)</button>
-            <p class="host-note">Portfolio Items = รูปแบบ Item ตาม Data Contract (ผู้เล่น 1 คน = 1 Item) · ข้อมูลละเอียด = มีชื่อ คะแนน และคำตอบรายชิ้น</p>
+            <p class="host-note">ปุ่ม “ดาวน์โหลด JSON” ในแต่ละแถวจะดาวน์โหลด Portfolio Item ของผู้เล่นคนนั้นเป็นไฟล์แยก 1 คนต่อ 1 ไฟล์ · ปุ่มด้านบนยังดาวน์โหลดข้อมูลรวมได้</p>
             <div class="table-wrap">
                 <table id="players-table" hidden>
                     <thead>
-                        <tr><th>#</th><th>เวลาที่เล่นล่าสุด</th><th>ชื่อ</th><th>จำนวนรอบ</th><th>คะแนนรอบล่าสุด</th></tr>
+                        <tr><th>#</th><th>เวลาที่เล่นล่าสุด</th><th>ชื่อ</th><th>จำนวนรอบ</th><th>คะแนนรอบล่าสุด</th><th>JSON รายบุคคล</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -92,6 +92,18 @@
                     td.textContent = v;           // textContent = ปลอดภัยจาก HTML ที่ผู้เล่นพิมพ์
                     tr.appendChild(td);
                 });
+
+                // ดาวน์โหลด Portfolio Item ของผู้เล่นคนนี้เป็น JSON object แยกไฟล์
+                const actionCell = document.createElement('td');
+                const playerBtn = document.createElement('button');
+                playerBtn.type = 'button';
+                playerBtn.textContent = 'ดาวน์โหลด JSON';
+                playerBtn.addEventListener('click', () => {
+                    download(p.item, makePlayerFilename(p));
+                });
+                actionCell.appendChild(playerBtn);
+                tr.appendChild(actionCell);
+
                 tbody.appendChild(tr);
             });
             table.hidden = data.players.length === 0;
@@ -110,6 +122,17 @@
             a.click();
             a.remove();
             setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }
+
+        // ใช้ชื่อผู้เล่นประกอบชื่อไฟล์ แต่ตัดอักขระที่ไม่เหมาะกับชื่อไฟล์ออก
+        function makePlayerFilename(player) {
+            const safeName = String(player.displayName || 'player')
+                .normalize('NFKC')
+                .replace(/[^\\p{L}\\p{N}_-]+/gu, '_')
+                .replace(/^_+|_+$/g, '')
+                .slice(0, 50) || 'player';
+            const itemId = String(player.item?.id || 'item').replace(/[^A-Za-z0-9_-]/g, '');
+            return safeName + '-' + itemId + '.json';
         }
 
         // แบบ Portfolio Item: ลิสต์ของ Item (ผู้เล่น 1 คน = 1 Item)

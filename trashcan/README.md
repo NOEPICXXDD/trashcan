@@ -41,7 +41,8 @@ sudo cp -r ~/<โฟลเดอร์ repo>/* /var/www/html/
 ```
 
 ## ไฟล์ที่ผู้จัด export ได้ (host.html)
-- **Portfolio Items (.json)**: ลิสต์ของ Item รูปแบบเดียวกับ `item002` ใน portfolio-example.json (ผู้เล่น 1 คน = 1 Item ใช้รอบล่าสุดของแต่ละคน)
+- **JSON รายบุคคล**: ในตารางหน้า Host กดปุ่ม “ดาวน์โหลด JSON” ของผู้เล่นแต่ละคน จะได้ไฟล์ JSON 1 ไฟล์ต่อ 1 คน เป็น JSON object ตาม Data Contract (ใช้รอบล่าสุดของแต่ละ session)
+- **Portfolio Items (.json)**: ดาวน์โหลดรายการ Item ของผู้เล่นทุกคนรวมเป็นไฟล์เดียว (ยังคงมีไว้สำหรับการส่งออกแบบรวม)
 - **ข้อมูลผู้เล่นละเอียด (.json)**: มีชื่อ คะแนน จำนวนรอบ คำตอบรายชิ้น + Item
 - ข้อมูลดิบทุกรอบอยู่ที่ `/var/www/data/challenge-players.json`
 
